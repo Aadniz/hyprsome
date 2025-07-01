@@ -72,34 +72,16 @@ pub fn get_current_monitor() -> Monitor {
     monitor::get().iter().find(|m| m.focused).unwrap().clone()
 }
 
-//TODO: refactor this nonsense
 pub fn select_workspace(workspace_number: &u64) {
     let mon = get_current_monitor();
-    match mon.id {
-        0 => workspace::focus(workspace_number),
-        _ => {
-            workspace::focus(
-                &format!("{}{}", mon.id, workspace_number)
-                    .parse::<u64>()
-                    .unwrap(),
-            );
-        }
-    }
+    let workspace_number = mon.id as u64 * 10 + workspace_number;
+    workspace::focus(&workspace_number);
 }
 
-//TODO: refactor this nonsense
 pub fn send_to_workspace(workspace_number: &u64) {
     let mon = get_current_monitor();
-    match mon.id {
-        0 => workspace::move_to(workspace_number),
-        _ => {
-            workspace::move_to(
-                &format!("{}{}", mon.id, workspace_number)
-                    .parse::<u64>()
-                    .unwrap(),
-            );
-        }
-    }
+    let workspace_number = mon.id as u64 * 10 + workspace_number;
+    workspace::move_to(&workspace_number);
 }
 
 pub fn send_to_monitor(monitor_number: &u64) {
@@ -128,22 +110,13 @@ pub fn send_to_monitor(monitor_number: &u64) {
     }
 }
 
-//TODO: refactor this nonsense
-pub fn movefocus(workspace_number: &u64) {
+pub fn move_focus(workspace_number: &u64) {
     let mon = get_current_monitor();
-    match mon.id {
-        0 => workspace::move_focus(workspace_number),
-        _ => {
-            workspace::move_focus(
-                &format!("{}{}", mon.id, workspace_number)
-                    .parse::<u64>()
-                    .unwrap(),
-            );
-        }
-    }
+    let workspace_number = mon.id as u64 * 10 + workspace_number;
+    workspace::move_focus(&workspace_number);
 }
 
-pub fn movefocus_to_monitor(monitor_number: &u64) {
+pub fn move_focus_to_monitor(monitor_number: &u64) {
     let mon = get_current_monitor();
 
     match monitor::get().iter().max_by(|m1, m2| m1.id.cmp(&m2.id)) {
@@ -371,10 +344,10 @@ fn main() {
             send_to_monitor(monitor_number);
         }
         Commands::Movefocus { workspace_number } => {
-            movefocus(workspace_number);
+            move_focus(workspace_number);
         }
         Commands::MovefocusToMonitor { monitor_number } => {
-            movefocus_to_monitor(monitor_number);
+            move_focus_to_monitor(monitor_number);
         }
     }
 }
